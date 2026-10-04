@@ -48,9 +48,16 @@ int keypressed(void)
 {
   IREGS r;
 
+#if defined(PC88VA)
+  /* No PC BIOS INT 16h: DOS direct console input status (AH=06h, DL=FFh). */
+  r.r_ax = 0x0600;
+  r.r_dx = 0xff;
+  intrpt(0x21, &r);
+#else
   r.r_ax = 0x0100;
 
   intrpt(0x16, &r);
+#endif
 
   /* Check the zero flag.  Z=0 means a key was pressed; Z=1 means no key */
   if (r.r_flags & 0x40)

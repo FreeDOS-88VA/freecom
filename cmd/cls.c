@@ -58,6 +58,21 @@ int cmd_cls (char * param) {
 
 	/* Output stream is standard CON device */
 	if((attr & 0x9f) == 0x93) {
+#if defined(PC88VA)
+		/* No PC BIOS INT 10h, and the VA DOS console rejects control
+		   characters such as the form feed above. The VA text BIOS
+		   INT 83h AH=02h (DX=8000h) writes the NUL-terminated string at
+		   DS:SI and interprets ESC[2J (clear) and ESC[H (home). */
+		static const char clear_home[] = "\x1b[2J\x1b[H";
+		if(*(unsigned long far *)MK_FP(0, 0x83 * 4) != 0) {
+			IREGS r;
+			r.r_ax = 0x0200;
+			r.r_dx = 0x8000;
+			r.r_si = FP_OFF((const char far *)clear_home);
+			r.r_ds = FP_SEG((const char far *)clear_home);
+			intrpt(0x83, &r);
+		}
+#else
 		unsigned attr = 0x0700;
 		int mode;
 		IREGS r;
@@ -96,6 +111,7 @@ int cmd_cls (char * param) {
 		r.r_dx = ((SCREEN_ROWS - 1) << 8) | (SCREEN_COLS - 1); /* Lower right */
 		intrpt(0x10, &r);
 		goxy(1, 1);			/* home the cursor */
+#endif
 	}
 	else if((attr & 0x9c) == 0x80) {
 		/* character device neither NUL nor CLOCK$ nor standard CON

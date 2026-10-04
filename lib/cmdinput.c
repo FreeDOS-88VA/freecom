@@ -17,6 +17,22 @@
 
 static unsigned orgx, orgy;		/* start of current command input */
 
+#if defined(PC88VA)
+/* PC-88VA text BIOS INT 83h AH=2Eh returns the cursor (DH column, DL row). */
+unsigned mywherex (void) {
+    IREGS r;
+    r.r_ax = 0x2e00;
+    intrpt(0x83, &r);
+    return 1U + ((r.r_dx >> 8) & 0xff);
+}
+
+unsigned mywherey (void) {
+    IREGS r;
+    r.r_ax = 0x2e00;
+    intrpt(0x83, &r);
+    return 1U + (r.r_dx & 0xff);
+}
+#else
 #define MK_PTR(type,seg,ofs) ((type FAR*) MK_FP (seg, ofs))
 /* safer edition of MK_FP (Arkady) */
 typedef struct { unsigned char col, row; } SCRPOS;
@@ -29,6 +45,7 @@ unsigned mywherex (void) {
 unsigned mywherey (void) {
     return _scr_pos_array [_scr_page].row + 1;
 }
+#endif
 
 #undef _NOCURSOR
 #undef _NORMALCURSOR
@@ -39,6 +56,16 @@ unsigned mywherey (void) {
 #define _NORMALCURSOR 0
 #define _SOLIDCURSOR  1
 
+#if defined(PC88VA)
+/* PC-88VA text BIOS INT 83h AH=25h: block cursor for insert mode,
+   underline cursor otherwise. */
+static void my_setcursortype( unsigned short state )
+{
+   IREGS r;
+   r.r_ax = (state == _SOLIDCURSOR) ? 0x2513 : 0x2503;
+   intrpt( 0x83, &r );
+}
+#else
 static void my_setcursortype( unsigned short state )
 {
    IREGS regs;
@@ -72,6 +99,7 @@ static void my_setcursortype( unsigned short state )
    }
    intrpt( 0x10, &regs );
 }
+#endif
 
 #define wherex mywherex
 #define wherey mywherey

@@ -56,8 +56,14 @@ typedef enum {
 	unsigned far *maxx = MK_FP(0x40, 0x4a);
 	unsigned char far *maxy = MK_FP(0x40, 0x84);
 */
+#if defined(PC88VA)
+/* No PC BIOS data area: the VA DOS console is 80x25. */
+#define MAX_X 80
+#define MAX_Y 24
+#else
 #define MAX_X (*(unsigned int  far*)MK_FP(0x40, 0x4a))
 #define MAX_Y (*(unsigned char far*)MK_FP(0x40, 0x84) == 0 ? 24 : *(unsigned char far*)MK_FP(0x40, 0x84)) /* when 0040:0084 contains 0, assume 25 rows (CGA...) */
+#endif
 #define SCREEN_COLS MAX_X
 #define SCREEN_ROWS (MAX_Y + 1)
 

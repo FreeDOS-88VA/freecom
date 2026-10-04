@@ -52,6 +52,18 @@
 
 #include "../include/misc.h"
 
+#if defined(PC88VA)
+/* PC-88VA text BIOS INT 83h AH=08h: set the cursor (DH column, DL row). */
+void goxy(const unsigned char x, const unsigned char y)
+{
+    IREGS r;
+    unsigned char column = x ? (unsigned char)(x - 1) : 0;
+    unsigned char row = y ? (unsigned char)(y - 1) : 0;
+    r.r_ax = 0x0800;
+    r.r_dx = ((unsigned)column << 8) | row;
+    intrpt(0x83, &r);
+}
+#else
 void goxy(const unsigned char x, const unsigned char y)
 {
     USEREGS
@@ -62,3 +74,4 @@ void goxy(const unsigned char x, const unsigned char y)
     _DL = ( x - 1 );
     geninterrupt( 0x10 );
 }
+#endif

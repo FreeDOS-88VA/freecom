@@ -168,7 +168,11 @@ ok:
 	statString = getString(deviceIn
 		? TEXT_COPY_COPIED_NO_END
 		: TEXT_COPY_COPIED);
+#if defined(PC88VA)
+	startTime = 0;		/* no PC BIOS tick counter */
+#else
 	startTime = *(unsigned far *)MK_FP(0x40,0x6c);
+#endif
 
 	ctrlz = 0;
 	while((rd = farread(fdin, buffer, size)) != 0) {
@@ -191,7 +195,11 @@ ok:
 						/* statistics */
 		copied += rd;	
 			
+#if defined(PC88VA)
+		now = startTime;
+#else
 		now = *(unsigned far *)MK_FP(0x40,0x6c);
+#endif
 		
 		if(!doStat
 		 && now - startTime > 15 * 18
