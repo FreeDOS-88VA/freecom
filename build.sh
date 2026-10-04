@@ -43,10 +43,11 @@ while (( "$#" )); do
   case "$1" in
     -h)
 	echo Build FreeCOM
-	echo Usage: %0 [-r] [clean] [no-xms-swap] [debug] [language]
+	echo Usage: %0 [-r] [clean] [no-xms-swap] [pc88va] [debug] [language]
 	echo -r: Rebuild -- Clean before proceed
 	echo clean: Remove *.OBJ, *.COM, *.LIB, etc. files, then exit
 	echo no-xms-swap: Build FreeCOM without XMS-Only Swap support
+	echo pc88va: Build FreeCOM for the NEC PC-88VA
 	echo debug: Build FreeCOM with debug settings.
 	echo You can select for which language to built FreeCOM by setting
 	echo the environment variable LNG before running this script, e.g.:
@@ -56,6 +57,9 @@ while (( "$#" )); do
 	;;
     no-xms-swap)
 	unset XMS_SWAP
+	;;
+    pc88va)
+	export PC88VA=1
 	;;
     debug)
 	export DEBUG=1

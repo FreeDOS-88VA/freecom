@@ -48,6 +48,11 @@ NASM = $(XNASM)
 __XMS_SWAP = -DXMS_SWAP
 !endif
 
+## Target platform selected by build.sh (only PC-88VA is defined here)
+!if $(PC88VA)0 == 10
+__TARGET = -DPC88VA
+!endif
+
 !if $(FIXSTRS_BUILD)0 == 10
 MMODEL = $(FIXSTRS_MMODEL)
 !endif
@@ -67,7 +72,7 @@ $(CFG): $(ECHOTODEP) $(CFG_DEPENDENCIES) $(TOP)/config.mak
 	$(ECHOTO) $(CFG) $(CFLAGS2)
 	$(ECHOTO) $(CFG) $(INCLUDEPATH)
 	$(ECHOTO) $(CFG) -m$(SHELL_MMODEL_COMP) $(MMODEL)
-	$(ECHOTO) $(CFG) $(DEBUG) $(__XMS_SWAP)
+	$(ECHOTO) $(CFG) $(DEBUG) $(__XMS_SWAP) $(__TARGET)
 
 echoto.bat: $(SCRIPTS_PATH)\echoto.bat
 	$(CP) $(SCRIPTS_PATH)\echoto.bat .
