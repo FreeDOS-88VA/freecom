@@ -186,7 +186,8 @@
    features that cannot operate there; this only selects existing FreeCOM
    configuration options. Long-filename support and LFNFOR are kept. */
 #ifdef PC88VA
-#undef FEATURE_KERNEL_SWAP_SHELL
+/* The FreeDOS 1.4 kernel-swap feature stays enabled; it needs neither XMS nor
+   UMBs. This does not change the VA commands. */
 #undef INCLUDE_CMD_LOADFIX
 #undef INCLUDE_CMD_LOADHIGH
 #undef INCLUDE_CMD_MEMORY
