@@ -35,7 +35,7 @@ Swapping is NOT supported in:
 The matching repaired FreeCOM/KSSF pair preserves the dynamic context,
 including aliases and history, across a supported interactive swap. Build
 and use both programs together; saved state is not a cross-version format.
-See tests/kswap/README.md for the bounded regression and unqualified cases.
+Swapping remains unsupported in the cases listed above.
 
 === How to use KSSF?
 
