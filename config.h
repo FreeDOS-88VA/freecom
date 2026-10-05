@@ -184,10 +184,13 @@
 
 /* PC-88VA: a V30 machine without XMS or UMBs. Leave out commands and
    features that cannot operate there; this only selects existing FreeCOM
-   configuration options. Long-filename support and LFNFOR are kept. */
+   configuration options. The VA kernel is FAT16-only, so long-filename support
+   and LFNFOR are left out as well. */
 #ifdef PC88VA
 /* The FreeDOS 1.4 kernel-swap feature stays enabled; it needs neither XMS nor
    UMBs. This does not change the VA commands. */
+#undef FEATURE_LONG_FILENAMES
+#undef INCLUDE_CMD_LFNFOR
 #undef INCLUDE_CMD_LOADFIX
 #undef INCLUDE_CMD_LOADHIGH
 #undef INCLUDE_CMD_MEMORY
